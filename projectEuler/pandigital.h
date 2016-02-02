@@ -1,0 +1,1 @@
+bool pandigital(int p);
