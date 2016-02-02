@@ -1,0 +1,99 @@
+ g1 xx
+ g2 yy
+ g3 zxZX
+ g4 zz
+ g5 xyyX
+ g6 yxxY
+ g7 yxyXYX
+ g8 zyyZ
+ g9 zyzYZY
+g10 xzxZ
+g11 xzzX
+g12 yzxZXY
+g13 yzzY
+g14 zyxxYZ
+g15 zyxyXYZX
+g16 zyxzXYZY
+g17 yzyyZY
+g18 yzyzYZ
+g19 yxzxZY
+g20 yxzzXY
+g21 xzyyZX
+g22 xzyzYZYX
+g23 xyzxZXYX
+g24 xyzzYX
+g25 xyxxYX
+g26 xyxyXY
+g27 yzyxxYZY
+g28 yzyxyXYZXY
+g29 yzyxzXYZ
+g30 yxzyyZXY
+g31 yxzyzYZXYX
+g32 xzyxxYZX
+g33 xzyxyXYZ
+g34 xzyxzXYZYX
+g35 xyxzxZYX
+g36 xyxzzXYX
+g37 xyzyyZYX
+g38 xyzyzYZX
+g39 xyzyxxYZX
+g40 xyzyxyXYZXYX
+g41 xyzyxzXYZX
+g42 xyxzyyZXYX
+g43 xyxzyzYZXY
+g44 yxzyxxYZXY
+g45 yxzyxyXYZY
+g46 yxzyxzXYZXYX
+g47 xyxzyxxYZXYX
+g48 xyxzyxyXYZYX
+g49 xyxzyxzXYZXY
+
+ G1 XX
+ G2 YY
+ G3 xzXZ
+ G4 ZZ
+ G5 xYYX
+ G6 yXXY
+ G7 xyxYXY
+ G8 zYYZ
+ G9 yzyZYZ
+G10 zXZX
+G11 xZZX
+G12 yxzXZY
+G13 yZZY
+G14 zyXXYZ
+G15 xzyxYXYZ
+G16 yzyxZXYZ
+G17 yzYYZY
+G18 zyZYZY
+G19 yzXZXY
+G20 yxZZXY
+G21 xzYYZX
+G22 xyzyZYZX
+G23 xyxzXZYX
+G24 xyZZYX
+G25 xyXXYX
+G26 yxYXYX
+G27 yzyXXYZY
+G28 yxzyxYXYZY
+G29 zyxZXYZY
+G30 yxzYYZXY
+G31 xyxzyZYZXY
+G32 xzyXXYZX
+G33 zyxYXYZX
+G34 xyzyxZXYZX
+G35 xyzXZXYX
+G36 xyxZZXYX
+G37 xyzYYZYX
+G38 xzyZYZYX
+G39 xzyXXYZYX
+G40 xyxzyxYXYZYX
+G41 xzyxZXYZYX
+G42 xyxzYYZXYX
+G43 yxzyZYZXYX
+G44 yxzyXXYZXY
+G45 yzyxYXYZXY
+G46 xyxzyxZXYZXY
+G47 xyxzyXXYZXYX
+G48 xyzyxYXYZXYX
+G49 yxzyxZXYZXYX

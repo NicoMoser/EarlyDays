@@ -1,0 +1,15 @@
+
+USAGE: permute [-b[<m>]] x1,...,xn [y1,...,yn]
+
+Here x1,...,xn determines a permutation of 1,...,n, and y1,...,yn determines another permutation of 1,...,n.
+x1,...,xn may be braid generators if -b<m> is used.
+Use negative numbers to represent inverse generators.  The optional positive integer <m> is the total number of strands.  If less than the absolute value of a generator, that generator will not be displayed.  If m is not given, the fewest number of strands will be used.
+
+If two arguments are passed, the -b option will be ignored and the output will include the infimum and supremum of the two arguments.  Also, a non-repeating positive braid representing each permutation will be displayed followed by a braid for the inf and sup.  If the two permutations lie on the same geodesic to the element omega = (n,n-1,...,2,1) in the Cayley graph, one will be shorter than the other and this order will be indicated.  If not, they are said to be not directly comparable.
+
+If only a single permutation is passed, the non-repeating positive braid representing this permutation will be displayed.
+
+DISCLAIMER: Not responsible for results if a non-permutation is a parameter but the -b option is not invoked.
+
+PERMUTE : A program by Leon Moser, Duke University.
+e-mail : moser@math.duke.edu

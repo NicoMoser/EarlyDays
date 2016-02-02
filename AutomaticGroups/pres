@@ -1,0 +1,333 @@
+Schrier representatives:
+1
+x
+xy
+xyx
+y
+yx
+z
+zy
+zyx
+xz
+xzy
+xzyx
+xyz
+xyzy
+xyzyx
+xyxz
+xyxzy
+xyxzyx
+yz
+yzy
+yzyx
+yxz
+yxzy
+yxzyx
+
+Generators for the subgroup:
+
+xx
+yy
+zxZX
+zz
+xyyX
+yxxY
+yxyXYX
+zyyZ
+zyzYZX
+xzxZ
+xzzX
+yzxZXY
+yzzY
+zyxxYZ
+zyxyXYZX
+zyxzXYZY
+yzyyZY
+yzyzYZ
+yxzxZY
+yxzzXY
+xzyyZX
+xzyzYZYX
+xyzxZXYX
+xyzzYX
+xyxxYX
+xyxyXY
+yzyxxYZY
+yzyxyXYZXY
+yzyxzXYZ
+yxzyyZXY
+yxzyzYZXYX
+xzyxxYZX
+xzyxyXYZ
+xzyxzXYZYX
+xyxzxZYX
+xyxzzXYX
+xyzyyZYX
+xyzyzYZX
+xyzyxxYZX
+xyzyxyXYZXYX
+xyzyxzXYZX
+xyxzyyZXYX
+xyxzyzYZXY
+yxzyxxYZXY
+yxzyxyXYZY
+yxzyxzXYZXYX
+xyxzyxxYZXYX
+xyxzyxyXYZYX
+xyxzyxzXYZXY
+
+
+Their inverses:
+
+XX
+YY
+xzXZ
+ZZ
+xYYX
+yXXY
+xyxYXY
+zYYZ
+xzyZYZ
+zXZX
+xZZX
+yxzXZY
+yZZY
+zyXXYZ
+xzyxYXYZ
+yzyxZXYZ
+yzYYZY
+zyZYZY
+yzXZXY
+yxZZXY
+xzYYZX
+xyzyZYZX
+xyxzXZYX
+xyZZYX
+xyXXYX
+yxYXYX
+yzyXXYZY
+yxzyxYXYZY
+zyxZXYZY
+yxzYYZXY
+xyxzyZYZXY
+xzyXXYZX
+zyxYXYZX
+xyzyxZXYZX
+xyzXZXYX
+xyxZZXYX
+xyzYYZYX
+xzyZYZYX
+xzyXXYZYX
+xyxzyxYXYZYX
+xzyxZXYZYX
+xyxzYYZXYX
+yxzyZYZXYX
+yxzyXXYZXY
+yzyxYXYZXY
+xyxzyxZXYZXY
+xyxzyXXYZXYX
+xyzyxYXYZXYX
+yxzyxZXYZXYX
+
+The relations of the original group are xyxYXY, zyzZYZ, and xzXZ, so the relations of the subgroup are of the form 
+
+sRS
+
+where s is a Schrier representative, R is one of the three relations, and S is the inverse of s.
+
+They are as follows:
+
+1xyxYXY1
+1yzyZYZ1
+1xzXZ1
+xxyxYXYX
+xyzyZYZX
+xxzXZX
+xyxyxYXYYX
+xyyzyZYZYX
+xyxzXZYX
+xyxxyxYXYXYX
+xyxyzyZYZXYX
+xyxxzXZXYX
+yxyxYXYY
+yyzyZYZY
+yxzXZY
+yxxyxYXYXY
+yxyzyZYZXY
+yxxzXZXY
+zxyxYXYZ
+zyzyZYZZ
+zxzXZZ
+zyxyxYXYYZ
+zyyzyZYZYZ
+zyxzXZYZ
+zyxxyxYXYXYZ
+zyxyzyZYZXYZ
+zyxxzXZXYZ
+xzxyxYXYZX
+xzyzyZYZZX
+xzxzXZZX
+xzyxyxYXYYZX
+xzyyzyZYZYZX
+xzyxzXZYZX
+xzyxxyxYXYXYZX
+xzyxyzyZYZXYZX
+xzyxxzXZXYZX
+xyzxyxYXYZYX
+xyzyzyZYZZYX
+xyzxzXZZYX
+xyzyxyxYXYYZYX
+xyzyyzyZYZYZYX
+xyzyxzXZYZYX
+xyzyxxyxYXYXYZYX
+xyzyxyzyZYZXYZYX
+xyzyxxzXZXYZYX
+xyxzxyxYXYZXYX
+xyxzyzyZYZZXYX
+xyxzxzXZZXYX
+xyxzyxyxYXYYZXYX
+xyxzyyzyZYZYZXYX
+xyxzyxzXZYZXYX
+xyxzyxxyxYXYXYZXYX
+xyxzyxyzyZYZXYZXYX
+xyxzyxxzXZXYZXYX
+yzxyxYXYZY
+yzyzyZYZZY
+yzxzXZZY
+yzyxyxYXYYZY
+yzyyzyZYZYZY
+yzyxzXZYZY
+yzyxxyxYXYXYZY
+yzyxyzyZYZXYZY
+yzyxxzXZXYZY
+yxzxyxYXYZXY
+yxzyzyZYZZXY
+yxzxzXZZXY
+yxzyxyxYXYYZXY
+yxzyyzyZYZYZXY
+yxzyxzXZYZXY
+yxzyxxyxYXYXYZXY
+yxzyxyzyZYZXYZXY
+yxzyxxzXZXYZXY
+
+
+Now express these in terms of the generators and their inverses.
+
+xyxYXY
+G7
+
+yzyZYZ
+G9
+
+xzXZ
+G3
+
+xx yxYXYX
+g1 G26
+
+xyzyZYZX
+G22
+
+xx zXZX
+g1 G10
+
+xyxy     xY X   YYX Insert XYyx, Xx
+xyxyXY yxxY XX xYYX
+g26    g6   G1 G5
+
+xyy   zyZYZYX Insert Xx
+xyyX xzyZYZYX
+g5   G38 
+
+xyxzXZYX
+G23
+
+xyxx     y   x Y   X     YXYX Insert YXxy, Xx, Yy, XYyx
+xyxxYX xyyX xx YY yXXY yxYXYX
+g25    g5   g1 G2 G6   G26
+
+xyxy     zyZYZXYX Insert YXyx
+xyxyXY yxzyZYZXYX
+g26    G43
+
+xyxx     zXZXYX Insert YXxy
+xyxxYX xyzXZXYX
+g25    G35
+
+yxy       xYX YY Insert XYXxyx
+yxyXYX xyxxYX YY
+g7     g25    G2
+
+yy zyZYZY
+g2 G18
+
+yxzXZY
+G12
+
+yxx   y xY     X       YXY Insert Yy, YXxy, XYXxyx
+yxxY yy xYYX xyXXYX xyxYXY
+g6   g2 G5   G25    G7
+
+yxy       zyZYZXY Insert XYXxyx
+yxyXYX xyxzyZYZXY
+g7     G31
+
+yxx   zXZXY Insert Yy
+yxxY yzXZXY
+g6   G19
+
+zxyxYXYZ
+
+zyzyZYZZ
+zxzXZZ
+zyxyxYXYYZ
+zyyzyZYZYZ
+zyxzXZYZ
+zyxxyxYXYXYZ
+zyxyzyZYZXYZ
+zyxxzXZXYZ
+xzxyxYXYZX
+xzyzyZYZZX
+xzxzXZZX
+xzyxyxYXYYZX
+xzyyzyZYZYZX
+xzyxzXZYZX
+xzyxxyxYXYXYZX
+xzyxyzyZYZXYZX
+xzyxxzXZXYZX
+xyzxyxYXYZYX
+xyzyzyZYZZYX
+xyzxzXZZYX
+xyzyxyxYXYYZYX
+xyzyyzyZYZYZYX
+xyzyxzXZYZYX
+xyzyxxyxYXYXYZYX
+xyzyxyzyZYZXYZYX
+xyzyxxzXZXYZYX
+xyxzxyxYXYZXYX
+xyxzyzyZYZZXYX
+xyxzxzXZZXYX
+xyxzyxyxYXYYZXYX
+xyxzyyzyZYZYZXYX
+xyxzyxzXZYZXYX
+xyxzyxxyxYXYXYZXYX
+xyxzyxyzyZYZXYZXYX
+xyxzyxxzXZXYZXYX
+yzxyxYXYZY
+yzyzyZYZZY
+yzxzXZZY
+yzyxyxYXYYZY
+yzyyzyZYZYZY
+yzyxzXZYZY
+yzyxxyxYXYXYZY
+yzyxyzyZYZXYZY
+yzyxxzXZXYZY
+yxzxyxYXYZXY
+yxzyzyZYZZXY
+yxzxzXZZXY
+yxzyxyxYXYYZXY
+yxzyyzyZYZYZXY
+yxzyxzXZYZXY
+yxzyxxyxYXYXYZXY
+yxzyxyzyZYZXYZXY
+yxzyxxzXZXYZXY

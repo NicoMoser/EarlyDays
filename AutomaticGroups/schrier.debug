@@ -1,0 +1,532 @@
+#include <stdlib.h>
+#include <stdio.h>
+
+#define MAXLINE 200	/* maximum length of a line */
+
+/*
+Input file structure:
+	Assume N generators.
+	Each line represents the information for each Schrier coset representative.
+	Each line consists of N+2 strings.
+	The first N strings are numbers which say which coset representative 
+		the corresponding generator takes the given coset representative.
+	A negative number indicates that it is via the negative of a generator.
+	The N+1-st string is the number for the coset representative next closest to the
+		identity.  This gives a tree structure for the cosets.  In particular, 
+		the N+1'st string of the first line says which coset is next closest to the
+		identity from the identity, so make it 0.
+	The N+2-nd string is the index of the generator which carries the coset closer to
+		the identity, since there may be more than one which does this in the graph
+		(but only one in the tree). It is negative if it is via the negative of the 
+		generator.
+	Suppose there are M such lines. (Ie., the subgroup is of index M)
+
+Data structure:
+	Create an array containing this information.
+	It must have M rows and N+2 columns.
+	The entry in the (i,j)-th position (1<=i<=M, 1<=j<=N) is where the j-th generator 
+		takes the i-th coset representative.  
+		When j = N+1, it says which coset representative is one step closer to 
+		the identity.
+		When j = N+2, it says which generator effects this move.
+
+Action on the data structure:
+	Create the generators for the subgroup. 
+		These are formed for each pair (s,g), where s is a coset representative and
+		g is a generator of the group G. Travel along s, then apply g.  Now travel back
+		along the tree to the identity.  The word formed in this way is a generator of 
+		the subgroup.  Note that if applying g travelled along the tree, then the entire
+		word was within the tree, and hence is trivial since travelling back to the 
+		identity cancels s followed by g.
+
+		Output these words in Tex, where g_{i} are the generators of the group G and
+		G_{i} are their inverses.
+
+	Create the words for the relations.
+		These are formed for each pair (s,R), where s is a coset representative and
+		R is a relator of the group G.  They are conjugates of R by s, or sRS, where
+		S is the INVERTED form of s.  That is, reverse the order of the generators 
+		and switch uppercase with lowercase.
+
+		Again, output these in Tex format.
+
+	Represent the relations in terms of the (s,g) words.
+		Given a (sRS) relation, follow along the word until you leave the tree.
+		From the current vertex, insert the path back to the identity followed by the path
+		back to the current vertex.  The string through the return to the identity will 
+		be a (s,g) generator, or its inverse.  
+			Determine which one and output this information.
+		Now examine the new word beginning at the identity and follow the same procedure.
+		Continue until the word is empty.
+
+Output file : an ascii file, using Tex conventions for subscripting, that consists of the Schrier
+(s) coset representatives, the (s,g) subgroup generators, the (sRS) relations of the subgroup, and the (sRS) relations written in terms of the (s,g) generators.
+
+*/
+
+void main(argc, argv)
+int argc;
+char *argv[];
+{
+	/*
+	Input file structure:
+		Assume N generators.
+
+		Each line represents the information for each Schrier coset 
+		representative.
+
+		Each line consists of N+1 strings.
+
+		The first N strings are numbers which say which coset 
+		representative (from 0 to whatever) the corresponding 
+		generator takes the given coset representative.
+
+		A negative number indicates that it is via the negative of 
+		a generator.
+
+		The N+1'st string is the number for the coset representative 
+		next closest to the identity.  This gives a tree structure 
+		for the cosets.  In particular, the N+1'st string of the first 
+		line says which coset is next closest to the identity from the 
+		identity, so make it 0.
+
+		The N+2-nd string is the index of the generator which carries 
+		the coset closer to the identity, since there may be more than 
+		one which does this in the graph (but only one in the tree).
+
+		Suppose there are M such lines. (Ie., the subgroup is of index M)
+
+	Output file: 
+		Ascii file, using Tex conventions for subscripting, that 
+		consists of the Schrier (s) coset representatives, the (s,g) 
+		subgroup generators, the (sRS) relations of the subgroup, and 
+		the (sRS) relations written in terms of the (s,g) generators.
+
+
+	*/
+
+	typedef int *coset;	/* A coset is a pointer to an integer */
+
+	FILE 	*infile;	/* Following Input file structure criteria above. */
+	FILE	*outfile;	/* Following Output file structure criteria above. */
+	int	output;		/* TRUE if output is to a file, FALSE if to stdout */
+
+
+	int	M;		/* Number of lines of infile = number of Schrier coset representatives */
+	int	N;		/* Number of strings per line of input file */
+	int	NUMGENS;	/* Number of generators of group = N - 2 */
+	int	i,j,k,m,temp;	/* index counters for arrays, etc. */
+
+	int	currentcoset;	/* When moving through table */
+	int	CLOSER;		/* Offset in coset array of index of next closer coset. = NUMGENS - 2 = N */
+	int	GENBACK;	/* Offset in coset array of index of generator to next closer coset. = N-1*/
+	coset	*table;		/* Array of rows of array consisting of this information */
+	int	noerror;	/* boolean variable 0 if error; 1 if noerror */
+
+	int	*stack;		/* Temporary location for storing path from coset rep back to 1 */
+
+	int	intin;		/* Input integer from a file */
+	char	c;		/* Input character from a file */
+
+	if (argc < 2) 
+	{
+		usage();
+	} 
+	else 
+	{ /* argc >= 2 */
+		/* Try to read M, the number of lines of input file */
+		infile = fopen(argv[1],"r");
+		if (argc > 2)
+		{
+			outfile = fopen(argv[2], "w");
+			output = 1;
+		}
+		else
+		{
+			outfile = stdout;
+			output = 0;
+		}
+
+		/* possible file errors */
+		if ((!infile) || (!outfile))
+		{
+			if (!infile)
+			{
+				fprintf(stderr,"SCHRIER error: Unable to open input file %s.\n", argv[1]);
+			}
+			if (!outfile)
+			{
+				if (output)
+				{
+					output = 0;
+					outfile = stdout;
+					fprintf(stderr,"SCHRIER error: Unable to open output file %s.\n", 
+						argv[2]);
+				}
+				else
+					fprintf(stderr,"SCHRIER error: Unable to open stdout.\n");
+			}
+		}
+		else
+		{ /* both files opened successfully */
+
+/*			if (output)
+				fprintf(stderr,"SCHRIER : Successfully opened both %s and %s.\n", 
+						argv[1], argv[2]);
+			else
+				fprintf(stderr,"SCHRIER : Successfully opened %s.\n", 
+						argv[1]);
+
+*/
+			fclose(infile);
+			if (output)
+			{
+				fclose(outfile); /* Close for now. Open as needed. */
+			}
+
+			infile = fopen(argv[1],"r");
+
+			M = 0;
+			while (fscanf(infile, "%c",&c) && !feof(infile) ) 
+			{
+/*
+				fprintf(stderr,"\nReading %c from %s.",c , argv[1]); 
+*/
+				if (c == '\n') /* Count newlines */
+					M++;
+			}
+
+			fclose(infile);
+
+/*			fprintf(stderr,"File %s has %d lines.\n",argv[1],M);
+*/
+
+			if (M) /* positive number of lines */
+			{
+				infile = fopen(argv[1],"r");
+
+				/* count the number of integers in infile */
+				N = 0;
+				while (fscanf(infile, "%d",&intin) && !feof(infile) )
+				{
+					N++;
+				}
+
+/*				fprintf(stderr,"File %s has %d integers.\n",argv[1],N);
+*/
+				N = N/M;
+
+/*				fprintf(stderr,"File %s has %d integers per line.\n",argv[1],N);
+*/
+				fclose(infile);
+
+				NUMGENS = N-2;
+				CLOSER = NUMGENS;
+				GENBACK = N-1;
+				if (NUMGENS <= 0)
+				{
+					fprintf(stderr,"SCHRIER error: Too few strings per line in %s.\n",
+							argv[1]);
+					exit(0);
+				}
+
+			}
+			else /* M == 0; error */
+			{
+				fprintf(stderr,"SCHRIER error: Empty file %s.\n",argv[1]);
+				fclose(infile);
+				if (output)
+					fclose(outfile);
+				exit(0);
+			}
+	/*
+	Data structure:
+		table is an array containing this information.
+
+		It must have M rows and N columns.
+
+		The entry in the (i,j)-th position is where the j-th generator 
+		takes the i-th coset representative.  When j = N+1, it says which 
+		coset representative is one step closer to the identity.
+		When j = N+2 it says which generator takes the i-th coset one step
+		closer to the 1'st coset.
+	*/
+			table = (coset *)malloc(sizeof(coset)*M);
+			if ( table != NULL) 
+			{ /* table is an array of M pointers to cosets */
+				i = 0;
+				noerror = 1;
+				while ((i<M) &&  noerror)
+				/* allocate coset space, stop when out of memory or after M cosets. */
+				{
+					table[i] = (int *)malloc(sizeof(int)*N);
+					if (table[i] == NULL)
+						noerror = 0;
+					else
+					{
+						i++;
+					}
+				}
+				if (i < M) /* loop stopped before all cosets allocated */
+				{
+					fprintf(stderr,"\nSCHRIER : Not enough memory to create array of ");
+					fprintf(stderr,"coset information.\n");
+					exit(0);
+				}
+
+				/* reset input file */
+				infile = fopen(argv[1],"r");
+
+/*				fprintf(stderr,"Reading from file %s.\n",argv[1]);
+*/
+				/* Create table */
+
+				for (i = 0;i<M;i++)
+				{
+					for (j = 0; j < N; j++)
+					{
+						fscanf(infile, "%d",&intin);
+
+						table[i][j] = intin;
+					}
+				}
+				fclose(infile);
+
+			} /* end enough memory for table */
+			else /* not enough memory for table */
+			{
+				fprintf(stderr,"SCHRIER error: Not enough memory to create array of ");
+				fprintf(stderr,"pointers to cosets.\n");
+				exit(0);
+			}
+
+/*			fprintf(stderr,"Testing array creation 1.\n");
+			for (i = 0; i < M; i++)
+			{
+				for (j = 0; j < N; j++)
+				{
+					fprintf(stderr,"%d ",table[i][j]);
+				}
+				fprintf(stderr,"\n");
+			}
+*/
+
+			stack = (int *)malloc(sizeof(int)*M);
+
+			/* since coset reps form a tree, only need at most M steps back to 1 */
+
+			/* Now output the generators */
+
+/*			fprintf(stderr,"%d group generators.\n",NUMGENS);
+			fprintf(stderr,"%d coset representatives.\n",M);
+*/
+			fprintf(outfile,"Now outputting subgroup generators.\n");
+			if (output)
+				outfile = fopen(argv[2],"w");
+			for (i = 0; i < M; i++) /* for (i+1)-th coset representative */
+			{
+				fprintf(stderr,"%d-th coset representative, s_{%d}.\n",i+1,i+1);
+
+				for (j = 0; j < NUMGENS; j++) /* for (j+1)-th generator */
+				{
+					currentcoset = i; /* reset after previous calculation */
+
+/*					fprintf(stdout,"%d-th group generator, g_{%d}.\n",j+1,j+1);
+*/
+					/* verify coset multiplication table */
+/*					fprintf(stderr,"Verify multiplication of cosets: ");
+					fprintf(stderr,"s_{%d} g_{%d} = ",i+1,j+1);
+*/
+/*					if (table[currentcoset][j] < 0)
+						fprintf(stderr,"s_{%d}.\n",-table[currentcoset][j]);
+					else fprintf(stderr,"s_{%d}.\n",table[currentcoset][j]);
+*/
+					/* output path from 1 to i-th coset rep. s_i */
+
+					/* The coset index of the next closest coset in the tree is 
+					given in the (CLOSER)-th column of the i-th row. 
+					Except for the 0-th coset, this is always positive. */
+
+					k = 0; /* index for stack */
+
+					while (table[currentcoset][CLOSER]) 
+						/* push table[currentcoset][GENBACK] onto stack. */
+					{
+						/* the (N-1) == (NUMGENS + 1)-th data for the i-th coset
+							gives the generator that goes to nextclosest. */
+						stack[k] = table[currentcoset][GENBACK];
+
+						/* set currentcoset to table[currentcoset][CLOSER] - 1 
+							before continuing loop */
+						currentcoset = table[currentcoset][CLOSER] - 1;
+
+/*						fprintf(stderr,"\tNext generator back to 1: %d\n",
+								stack[k]);
+*/
+						k++;
+					}
+					/* now unpile stack to output file */
+
+					k--;
+
+/*					fprintf(stderr,
+						"Path from Identity to coset representative s_{%d}\n",i+1);
+*/
+					fprintf(outfile,"$$");
+					while (k+1)
+					{
+					/* reverse sign, since we're going from Id to s_i now. */
+						if (stack[k] < 0)
+							fprintf(outfile,"g_{%d}",-stack[k]);
+						else if (stack[k] > 0)
+							fprintf(outfile,"G_{%d}",stack[k]);
+						else fprintf(stderr, 
+							"SCHRIER error: generator %d is zero.\n", k);
+						k--;
+					}
+					if (i)
+						fprintf(outfile,"    ");
+
+/*					fprintf(stderr,"\nGenerator %d\n",j+1);
+*/
+					/* output generator x_j */
+					fprintf(outfile,"g_{%d}   ",j+1);
+
+					/* determine new coset s_i x_j */
+					/* subtract 1!!! */
+
+					currentcoset = table[i][j];
+					if (currentcoset < 0)
+						currentcoset = -currentcoset;
+					currentcoset = currentcoset - 1;
+
+					/* output path back to 1 from new coset s_k = s_i x_j */
+
+/*					fprintf(stderr,"Path from new coset back to Identity\n");
+*/
+					while (table[currentcoset][CLOSER]) 
+					{
+						/* the (N-1) == (NUMGENS + 1)-th data for the i-th coset
+							gives the generator that goes to nextclosest. */
+
+						if (table[currentcoset][GENBACK] < 0)
+							fprintf(outfile,"G_{%d}",
+								-table[currentcoset][GENBACK]);
+						else if (table[currentcoset][GENBACK] > 0)
+							fprintf(outfile,"g_{%d}",
+								table[currentcoset][GENBACK]);
+						else fprintf(stderr,
+			"\nSCHRIER error: coset %d goes back to identity via 0 generator.\n", currentcoset);
+						/* set currentcoset to table[currentcoset][CLOSER] - 1 
+							before continuing loop */
+						currentcoset = table[currentcoset][CLOSER] - 1;
+					}
+					fprintf(outfile,"$$");
+					fprintf(outfile,"\n");
+				}
+				fprintf(outfile,"\n\n");
+			}
+			if (output)
+				fclose(outfile);
+/*
+	Action on the data structure:
+		Create the generators for the subgroup. 
+
+		These are formed for each pair (s,g), where s is a coset 
+		representative and g is a generator of the group G. 
+		Travel along s, then apply g.  
+		Now travel back along the tree to the identity. 
+		The word formed in this way is a generator of the subgroup.  
+		Note that if applying g travelled along the tree, then the 
+		entire word was within the tree, and hence is trivial since 
+		travelling back to the identity cancels s followed by g.
+
+		Output these words in Tex, where g_{i} are the generators of 
+		the group G and G_{i} are their inverses.
+*/
+
+		
+
+/*	Create the words for the relations.
+		These are formed for each pair (s,R), where s is a coset 
+		representative and R is a relator of the group G.  
+		They are conjugates of R by s, or sRS, where S is the 
+		INVERTED form of s.  
+		That is, reverse the order of the generators and switch 
+		uppercase with lowercase.
+
+		Again, output these in Tex format.
+
+	Represent the relations in terms of the (s,g) words.
+		Given a (sRS) relation, follow along the word until you leave 
+		the tree.
+		From the current vertex, insert the path back to the identity 
+		followed by the path back to the current vertex.  The string up 
+		through the return to the identity will be a (s,g) generator, or 
+		its inverse.  
+
+		Determine which one and output this information.
+
+		Now examine the new word beginning at the identity and follow 
+		the same procedure.
+
+		Continue until the word is empty.
+
+*/
+		} /* end else both files opened successfully */
+	} /* end else argc == 3 */
+}
+
+usage()
+{
+	fprintf(stderr,"\
+Usage:\n\
+\n\
+	SCHRIER <input file> <output file>\n\
+\n\
+	The program takes a finitely presented group G = <g,...|R,...> and coset\n\
+	representatives	for a subgroup H and gives a presentation for H.\n\
+\n\
+	Input file structure:\n\
+		The input file gives the information for a system of Schrier\n\
+		coset representatives of the subgroup.\n\
+\n\
+		Assume N generators for G.\n\
+\n\
+		Each line represents the information for each Schrier coset\n\
+		representative.\n\
+\n\
+		Each line consists of N+1 strings.\n\
+\n\
+		N is determined by the last line of the input file.  If another\n\
+		line of this file doesn't contain N+1 strings, execution halts\n\
+		and the offending line is indicated.\n\
+\n\
+		The first N strings are numbers which say which coset\n\
+		representative (from 0 to whatever) the corresponding\n\
+		generator takes the given coset representative.\n\
+\n\
+		The N+1-st string is the number for the coset representative\n\
+		next closest to the identity.  This gives a tree structure\n\
+		for the cosets.  In particular, the N+1'st string of the first\n\
+		line says which coset is next closest to the identity from the\n\
+		identity, so make it -1.\n\
+\n\
+		The N+2-nd string is the index of the generator that takes the coset\n\
+		to the next closest one.  If it is an inverse generator, use negative\n\
+		numbers.\n\
+\n\
+		Suppose there are M such lines. (Ie., the subgroup is of index M)\n\
+\n\
+	Output file:\n\
+		The output file is an ascii file, using Tex conventions for \n\
+		subscripting, that consists of the Schrier (s) coset \n\
+		representatives, the (s,g) subgroup generators, the (sRS)\n\
+		relations of the subgroup, and the (sRS) relations written\n\
+		in terms of the (s,g) generators.\n\
+\n");
+
+} /* end usage */
+
+
+/* End program */
