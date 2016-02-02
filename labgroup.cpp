@@ -294,11 +294,11 @@ void doprintmode(void) {
 			}
 			break;
 
-			case 'p':
-			case 'P':
-				fprintf(stdprn,"\n\n");
-				display(stdprn,curr);
-				fprintf(stdprn,"\f");
+			// case 'p':
+			// case 'P':
+			// 	fprintf(stdprn,"\n\n");
+			// 	display(stdprn,curr);
+			// 	fprintf(stdprn,"\f");
 			break;
 
 			default : break;
@@ -373,8 +373,8 @@ Press <Q> to quit.\
 
 }
 
-void main(int argc, char *argv[]);
-void main(int argc, char *argv[]) {
+int main(int argc, char *argv[]);
+int main(int argc, char *argv[]) {
 
 	int i;
 
@@ -515,4 +515,5 @@ void main(int argc, char *argv[]) {
 			default : break;
 		} /* end switch */
 	} /* end while */
+	return 0;
 } /* End Program */
